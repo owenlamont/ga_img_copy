@@ -3,12 +3,6 @@ import copy
 import math
 import random
 
-from mpire import WorkerPool
-import numpy as np
-from PIL import Image
-from rich.progress import Progress
-import typer
-
 from fitness import fitness_worker
 from genetic_algorithm import (
     crossover,
@@ -17,10 +11,15 @@ from genetic_algorithm import (
     select_elite,
 )
 from genome import Genome
+from mpire import WorkerPool
+import numpy as np
+from PIL import Image
 from renderer import (
     render_genome,
     set_image_dimensions as renderer_set_image_dimensions,
 )
+from rich.progress import Progress
+import typer
 
 
 app = typer.Typer()

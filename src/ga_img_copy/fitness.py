@@ -1,14 +1,13 @@
 # fitness.py
 
+from genome import Genome, set_image_dimensions as genome_set_image_dimensions
 import numpy as np
 from numpy.typing import NDArray
-from skimage.metrics import mean_squared_error
-
-from genome import Genome, set_image_dimensions as genome_set_image_dimensions
 from renderer import (
     render_genome,
     set_image_dimensions as renderer_set_image_dimensions,
 )
+from skimage.metrics import mean_squared_error
 
 
 def fitness_worker(

@@ -1,8 +1,7 @@
 # renderer.py
 
-from PIL import Image, ImageDraw
-
 from genome import Genome
+from PIL import Image, ImageDraw
 
 
 # Global variables for image dimensions
