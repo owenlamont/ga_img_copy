@@ -14,10 +14,7 @@ from genome import Genome
 from mpire import WorkerPool
 import numpy as np
 from PIL import Image
-from renderer import (
-    render_genome,
-    set_image_dimensions as renderer_set_image_dimensions,
-)
+from renderer import render_genome
 from rich.progress import Progress
 import typer
 
@@ -40,14 +37,10 @@ def evolve(
     image_width, image_height = target_image.size
     target_array = np.array(target_image)
 
-    # Pass image dimensions to the genome and renderer modules
-    from genome import set_image_dimensions as genome_set_image_dimensions
-
-    genome_set_image_dimensions(image_width, image_height)
-    renderer_set_image_dimensions(image_width, image_height)
-
     # Initialize population
-    population: list[Genome] = initialize_population(population_size, max_shapes)
+    population: list[Genome] = initialize_population(
+        population_size, max_shapes, image_width, image_height
+    )
 
     # Set up progress bar
     progress = Progress()
@@ -96,11 +89,13 @@ def evolve(
             offspring: list[Genome] = []
             while len(new_population) + len(offspring) < population_size:
                 parent1, parent2 = random.sample(elite, 2)
-                child = crossover(parent1, parent2)
+                child = crossover(parent1, parent2, image_width, image_height)
                 offspring.append(child)
 
             # Mutate offspring (not elites)
-            offspring = mutate_population(offspring, mutation_rate, max_shapes)
+            offspring = mutate_population(
+                offspring, mutation_rate, max_shapes, image_width, image_height
+            )
 
             # Combine elites and mutated offspring to form the new population
             population = new_population + offspring
@@ -108,21 +103,25 @@ def evolve(
             progress.update(task, advance=1)
 
     # Save the final image
-    best_image = render_genome(population[0])
+    best_image = render_genome(population[0], image_width, image_height)
     best_image.save("evolved_image.png")
 
     # Generate GIF
-    generate_gif(best_genomes, target_image)
+    generate_gif(best_genomes, target_image, image_width, image_height)
 
     progress.console.log("[bold green]Evolution complete![/bold green]")
 
 
-# main.py (partial)
-def generate_gif(best_genomes: list[Genome], target_image: Image.Image) -> None:
+def generate_gif(
+    best_genomes: list[Genome],
+    target_image: Image.Image,
+    image_width: int,
+    image_height: int,
+) -> None:
     frames = []
     target_image = target_image.convert("RGB")  # Ensure target image is in RGB mode
     for genome in best_genomes:
-        generated_image = render_genome(genome)
+        generated_image = render_genome(genome, image_width, image_height)
         # Combine the target image and generated image side by side
         combined_width = target_image.width + generated_image.width
         combined_height = max(target_image.height, generated_image.height)

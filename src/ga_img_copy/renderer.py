@@ -1,22 +1,10 @@
 # renderer.py
-
 from genome import Genome
 from PIL import Image, ImageDraw
 
 
-# Global variables for image dimensions
-IMAGE_WIDTH: int = 512
-IMAGE_HEIGHT: int = 512
-
-
-def set_image_dimensions(width: int, height: int) -> None:
-    global IMAGE_WIDTH, IMAGE_HEIGHT
-    IMAGE_WIDTH = width
-    IMAGE_HEIGHT = height
-
-
-def render_genome(genome: Genome) -> Image.Image:
-    image = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), (255, 255, 255))
+def render_genome(genome: Genome, image_width: int, image_height: int) -> Image.Image:
+    image = Image.new("RGB", (image_width, image_height), (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
     for shape in genome.shapes:
